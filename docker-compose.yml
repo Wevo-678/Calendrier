@@ -1,0 +1,26 @@
+services:  # Définit les services à gérer (backend et frontend dans ton cas).
+
+  backend:  # Configuration du service backend (NestJS).
+    build:  # Indique que Docker doit construire une image à partir du Dockerfile du backend.
+      context: ./backend  # Spécifie le chemin vers le dossier contenant le Dockerfile du backend.
+    ports:
+      - "3001:3000"  # Mappe le port 3001 du container au port 3001 de l'hôte.
+    volumes:
+      - ./backend:/app  # Synchronise le dossier local ./backend avec le dossier /app dans le container.
+      - /app/node_modules  # Empêche le partage des node_modules du container avec l'hôte.
+    environment:  # Définit les variables d'environnement pour le backend.
+      - NODE_ENV=development 
+      - PORT=3000 # Indique que le backend tourne en mode développement.
+    command: npm run start:dev  # Commande exécutée au démarrage pour lancer le backend NestJS.
+
+  frontend:  # Configuration du service frontend (React).
+    build:  # Indique que Docker doit construire une image à partir du Dockerfile du frontend.
+      context: ./frontend  # Spécifie le chemin vers le dossier contenant le Dockerfile du frontend.
+    ports:
+      - "3000:3000"  # Mappe le port 3000 du container au port 3000 de l'hôte.
+    volumes:
+      - ./frontend:/app  # Synchronise le dossier local ./frontend avec le dossier /app dans le container.
+      - /app/node_modules  # Empêche le partage des node_modules du container avec l'hôte.
+    environment:  # Définit les variables d'environnement pour le frontend.
+      - REACT_APP_API_URL=http://localhost:3001  # URL de l'API backend pour React.
+    command: npm start  # Commande exécutée au démarrage pour lancer le serveur de développement React.
